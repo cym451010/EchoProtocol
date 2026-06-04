@@ -55,12 +55,13 @@ void AEchoPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
-	if (EnhancedInput)
+	if (!EnhancedInput)
 	{
-		EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::Move);
-		EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::Look);
+		return;
 	}
 
+	EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::Move);
+	EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::Look);
 }
 
 void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
@@ -68,6 +69,11 @@ void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	const FRotator Rotation = Controller->GetControlRotation();
+	if (!Controller)
+	{
+		return;
+	}
+
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);

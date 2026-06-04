@@ -29,12 +29,13 @@ public:
 	void Move(const struct FInputActionValue& Value);
 	void Look(const struct FInputActionValue& Value);
 
-	//Move
+	//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputMappingContext* DefaultMappingContext;
+	TObjectPtr<class UInputMappingContext*> DefaultMappingContext;
+
+	//Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputAction* MoveAction;
-	//Mouse
+	TObjectPtr<class UInputAction*> MoveAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputAction* LookAction;
+	TObjectPtr<class UInputAction*> LookAction;
 };
