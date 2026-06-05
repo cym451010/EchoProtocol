@@ -23,11 +23,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void Move(const struct FInputActionValue& Value);
 	void Look(const struct FInputActionValue& Value);
+	void StartCrouch(const struct FInputActionValue& Value);
+	void StopCrouch(const struct FInputActionValue& Value);
+
+	void Crouch(bool bClientSimulation = false) override;
+	void UnCrouch(bool bClientSimulation = false) override;
 
 	//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -38,4 +44,8 @@ public:
 	TObjectPtr<class UInputAction> MoveAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> LookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> JumpAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> CrouchAction;
 };
