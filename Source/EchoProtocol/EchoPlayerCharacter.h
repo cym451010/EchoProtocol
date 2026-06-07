@@ -31,9 +31,14 @@ protected:
 	void Look(const struct FInputActionValue& Value);
 	void StartCrouch(const struct FInputActionValue& Value);
 	void StopCrouch(const struct FInputActionValue& Value);
+	void StartSprint(const struct FInputActionValue& Value);
+	void StopSprint(const struct FInputActionValue& Value);
+	void Interact(const struct FInputActionValue& Value);
 
 	void Crouch(bool bClientSimulation = false) override;
 	void UnCrouch(bool bClientSimulation = false) override;
+	void LineTracing() const;
+	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
 
 	//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -48,4 +53,15 @@ protected:
 	TObjectPtr<class UInputAction> JumpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> CrouchAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> SprintAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> InteractAction;
+
+	UPROPERTY(Category = "Character Movement: Sprinting", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
+	float SprintSpeed;
+
+private:
+	UPROPERTY(EditAnywhere)
+	float MaxTraceRange;
 };
