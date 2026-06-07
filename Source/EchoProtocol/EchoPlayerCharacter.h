@@ -23,6 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintPure)
+	float GetSpeed() const;
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -66,4 +68,7 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 	float MaxTraceRange;
+
+	UPROPERTY(EditAnywhere)
+	float Speed;
 };

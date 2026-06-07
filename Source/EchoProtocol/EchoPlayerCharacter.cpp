@@ -18,7 +18,7 @@
 AEchoPlayerCharacter::AEchoPlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// Character Rotation 설정 (TPS 게임)
 	bUseControllerRotationPitch = false;
@@ -59,6 +59,7 @@ void AEchoPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Speed = GetVelocity().Size2D();
 }
 
 // Called to bind functionality to input
@@ -175,4 +176,9 @@ void AEchoPlayerCharacter::TraceInteractable() const
 void AEchoPlayerCharacter::DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const
 {
 	DrawDebugLineTraceSingle(GetWorld(), OutStart, OutEnd, EDrawDebugTrace::Persistent, OutHit, OutHitResult, FColor::Red, FColor::Green, 2.f);
+}
+
+float AEchoPlayerCharacter::GetSpeed() const
+{
+	return Speed;
 }
