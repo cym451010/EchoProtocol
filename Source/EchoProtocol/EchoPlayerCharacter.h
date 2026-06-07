@@ -37,7 +37,7 @@ protected:
 
 	void Crouch(bool bClientSimulation = false) override;
 	void UnCrouch(bool bClientSimulation = false) override;
-	void LineTracing() const;
+	void TraceInteractable() const;
 	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
 
 	//Input Mapping Context
@@ -58,8 +58,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> InteractAction;
 
+	UPROPERTY(Category = "Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
+	float WalkSpeed = 600;
 	UPROPERTY(Category = "Character Movement: Sprinting", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
-	float SprintSpeed;
+	float SprintSpeed = 900;
 
 private:
 	UPROPERTY(EditAnywhere)

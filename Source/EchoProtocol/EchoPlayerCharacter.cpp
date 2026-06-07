@@ -142,15 +142,15 @@ void AEchoPlayerCharacter::StartSprint(const struct FInputActionValue& Value)
 
 void AEchoPlayerCharacter::StopSprint(const struct FInputActionValue& Value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = 600;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
 void AEchoPlayerCharacter::Interact(const struct FInputActionValue& Value)
 {
-	LineTracing();
+	TraceInteractable();
 }
 
-void AEchoPlayerCharacter::LineTracing() const
+void AEchoPlayerCharacter::TraceInteractable() const
 {
 	FHitResult HitResult;
 	FVector Location;
