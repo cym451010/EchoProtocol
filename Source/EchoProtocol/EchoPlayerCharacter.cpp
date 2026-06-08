@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Gun.h"
 #include "KismetTraceUtils.h"
 #include "Engine/World.h"
 
@@ -52,6 +53,13 @@ void AEchoPlayerCharacter::BeginPlay()
 		return;
 	}
 	Subsystem->AddMappingContext(DefaultMappingContext, 0);
+
+	if (!WeaponClass)
+	{
+		return;
+	}
+	Weapon = GetWorld()->SpawnActor<AGun>(WeaponClass);
+	Weapon->AttachToComponent(Cast<USceneComponent>(GetMesh()), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 }
 
 // Called every frame

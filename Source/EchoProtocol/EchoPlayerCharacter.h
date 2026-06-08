@@ -71,4 +71,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Speed;
+
+	UPROPERTY(EditAnywhere, Category = "Gun")
+	TSubclassOf<class AGun> WeaponClass;
+	UPROPERTY(EditAnywhere, Category = "Gun")
+	class AGun* Weapon;
 };
