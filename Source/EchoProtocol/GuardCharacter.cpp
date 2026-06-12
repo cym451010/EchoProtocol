@@ -24,6 +24,7 @@ void AGuardCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Speed = GetVelocity().Size2D();
 }
 
 // Called to bind functionality to input
@@ -41,4 +42,9 @@ AActor* AGuardCharacter::GetCurrentPatrol() const
 	}
 
 	return PatrolPoints[CurrentPatrolIndex];
+}
+
+float AGuardCharacter::GetSpeed() const
+{
+	return Speed;
 }

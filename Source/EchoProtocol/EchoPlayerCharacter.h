@@ -66,10 +66,7 @@ protected:
 	float SprintSpeed = 900;
 
 private:
-	UPROPERTY(EditAnywhere)
 	float MaxTraceRange;
-
-	UPROPERTY(EditAnywhere)
 	float Speed;
 
 	UPROPERTY(EditAnywhere, Category = "Gun")

@@ -48,5 +48,5 @@ EBTNodeResult::Type UBT_FindPatrolPoint::ExecuteTask(UBehaviorTreeComponent& Own
 	}
 	return EBTNodeResult::Succeeded;
 
-	// TODO : 코드 리팩토링하기
+	// TODO : CurrentPatrolIndex 증가 로직을 GuardCharacter로 이동, 하드코딩된 3 제거
 }

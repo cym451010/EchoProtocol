@@ -14,6 +14,9 @@ class ECHOPROTOCOL_API AGuardAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+public:
+	AGuardAIController();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -21,4 +24,13 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditAnywhere)
+	class UBlackboardComponent* BlackboardComponent;
+public:
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, struct FAIStimulus Stimulus);
+	UPROPERTY(EditAnywhere)
+	class UAIPerceptionComponent* AIPerception;
+	UPROPERTY(EditAnywhere)
+	class UAISenseConfig_Sight* SightConfig;
 };

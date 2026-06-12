@@ -31,4 +31,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TArray<AActor*> PatrolPoints;
 	int32 CurrentPatrolIndex;
+
+	UFUNCTION(BLUEPRINTPURE)
+	float GetSpeed() const;
+private:
+	float Speed;
 };
