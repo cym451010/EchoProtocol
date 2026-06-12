@@ -35,18 +35,11 @@ EBTNodeResult::Type UBT_FindPatrolPoint::ExecuteTask(UBehaviorTreeComponent& Own
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPointsVector", PatrolPoint->GetActorLocation());
 
-	if (GuardCharacter->CurrentPatrolIndex > 2)
-	{
-		return EBTNodeResult::Failed;
-	}
-
 	GuardCharacter->CurrentPatrolIndex++;
 
-	if (GuardCharacter->CurrentPatrolIndex >= 3)
+	if (GuardCharacter->CurrentPatrolIndex >= GuardCharacter->PatrolPoints.Num())
 	{
 		GuardCharacter->CurrentPatrolIndex = 0;
 	}
 	return EBTNodeResult::Succeeded;
-
-	// TODO : CurrentPatrolIndex 증가 로직을 GuardCharacter로 이동, 하드코딩된 3 제거
 }

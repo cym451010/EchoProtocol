@@ -17,8 +17,4 @@ class ECHOPROTOCOL_API UBTTask_FindPlayerLocation : public UBTTask_BlackboardBas
 	UBTTask_FindPlayerLocation();
 public:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
-private:
-	UPROPERTY(EditAnywhere)
-	class AEchoPlayerCharacter* Player;
 };
