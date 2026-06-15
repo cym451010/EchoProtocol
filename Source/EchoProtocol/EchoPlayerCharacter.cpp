@@ -15,7 +15,7 @@
 #include "KismetTraceUtils.h"
 #include "Engine/World.h"
 #include "GuardCharacter.h"
-#include "MotionWarpingComponent.h"
+
 
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
@@ -31,9 +31,6 @@ AEchoPlayerCharacter::AEchoPlayerCharacter()
 
 	// Can Crouch 켜기
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
-
-	// Montage Warping
-	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));	
 
 }
 
@@ -268,6 +265,12 @@ void AEchoPlayerCharacter::TryTakeDown()
 	if (Dot > 0.7f)
 	{
 		//암살 애니메이션 재생
+		FVector BackOffset = -Guard->GetActorForwardVector() * TakeDownRange;
+
+		FVector TargetLocation = Guard->GetActorLocation() + BackOffset;
+		SetActorLocation(TargetLocation);
+		SetActorRotation(Guard->GetActorRotation());
+
 		bIsPerformingTakeDown = true;
 		PlayAnimMontage(TakeDownMontage);
 		Guard->TakeDown();

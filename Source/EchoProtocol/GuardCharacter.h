@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,40 +7,46 @@
 UCLASS()
 class ECHOPROTOCOL_API AGuardCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	AGuardCharacter();
+    AGuardCharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+    virtual void Tick(float DeltaTime) override;
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+public:
+    // Combat
+    void TakeDown();
+    UFUNCTION(BlueprintCallable)
+    void Dead();
 
-	void TakeDown();
+public:
+    // AI / Patrol
+    AActor* GetCurrentPatrol() const;
 
-	AActor* GetCurrentPatrol() const;
+    UPROPERTY(EditAnywhere, Category = "AI")
+    TArray<AActor*> PatrolPoints;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
-	TArray<AActor*> PatrolPoints;
-	int32 CurrentPatrolIndex;
+    int32 CurrentPatrolIndex;
 
-	UFUNCTION(BLUEPRINTPURE)
-	float GetSpeed() const;
+    UPROPERTY()
+    class AEchoPlayerCharacter* Player;
 
-	UPROPERTY()
-	class AEchoPlayerCharacter* Player;
 private:
-	float Speed;
-	bool bIsPerformingTakeDown = false;
+    // Animation
+    UPROPERTY(EditAnywhere, Category = "Animation")
+    class UAnimMontage* DownMontage;
 
-	UPROPERTY(EditAnywhere, Category = "Animation")
-	class UAnimMontage* DownMontage;
+    bool bIsPerformingTakeDown = false;
+public:
+    UFUNCTION(BlueprintPure)
+    float GetSpeed() const;
+
+private:
+    float Speed;
 };

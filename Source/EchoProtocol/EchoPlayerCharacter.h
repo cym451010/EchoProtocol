@@ -73,6 +73,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxTraceRange;
 	float Speed;
+	UPROPERTY(EditAnywhere)
+	float TakeDownRange = 100.f;
 	bool bIsPerformingTakeDown = false;
 
 	// Weapon
@@ -84,6 +86,4 @@ private:
 	//Animation
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	class UAnimMontage* TakeDownMontage;
-	UPROPERTY(VisibleAnywhere, Category = "Animation")
-	class UMotionWarpingComponent* MotionWarpingComponent;
 };

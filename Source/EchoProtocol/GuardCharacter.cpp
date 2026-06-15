@@ -64,3 +64,8 @@ void AGuardCharacter::TakeDown()
 	SetActorEnableCollision(false);
 	PlayAnimMontage(DownMontage);
 }
+
+void AGuardCharacter::Dead()
+{
+	Destroy();
+}
