@@ -26,19 +26,6 @@ public class EchoProtocol : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"EchoProtocol",
-			"EchoProtocol/Variant_Platforming",
-			"EchoProtocol/Variant_Platforming/Animation",
-			"EchoProtocol/Variant_Combat",
-			"EchoProtocol/Variant_Combat/AI",
-			"EchoProtocol/Variant_Combat/Animation",
-			"EchoProtocol/Variant_Combat/Gameplay",
-			"EchoProtocol/Variant_Combat/Interfaces",
-			"EchoProtocol/Variant_Combat/UI",
-			"EchoProtocol/Variant_SideScrolling",
-			"EchoProtocol/Variant_SideScrolling/AI",
-			"EchoProtocol/Variant_SideScrolling/Gameplay",
-			"EchoProtocol/Variant_SideScrolling/Interfaces",
-			"EchoProtocol/Variant_SideScrolling/UI"
 		});
 
 		// Uncomment if you are using Slate UI

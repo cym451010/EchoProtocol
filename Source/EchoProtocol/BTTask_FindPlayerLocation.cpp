@@ -14,7 +14,7 @@ UBTTask_FindPlayerLocation::UBTTask_FindPlayerLocation()
 
 EBTNodeResult::Type UBTTask_FindPlayerLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AEchoPlayerCharacter* Player = Cast<AEchoPlayerCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	AEchoPlayerCharacter* Player = Cast<AEchoPlayerCharacter>(UGameplayStatics::GetPlayerPawn(OwnerComp.GetWorld(), 0));
 	if (!Player)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Location Null"));
