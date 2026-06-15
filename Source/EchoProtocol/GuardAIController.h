@@ -29,8 +29,8 @@ private:
 public:
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, struct FAIStimulus Stimulus);
-	UPROPERTY(EditAnywhere)
-	class UAIPerceptionComponent* AIPerception;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TObjectPtr<UAIPerceptionComponent> AIPerception;;
+	UPROPERTY()
 	class UAISenseConfig_Sight* SightConfig;
 };

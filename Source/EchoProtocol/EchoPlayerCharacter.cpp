@@ -14,6 +14,8 @@
 #include "Gun.h"
 #include "KismetTraceUtils.h"
 #include "Engine/World.h"
+#include "GuardCharacter.h"
+#include "MotionWarpingComponent.h"
 
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
@@ -29,6 +31,10 @@ AEchoPlayerCharacter::AEchoPlayerCharacter()
 
 	// Can Crouch 켜기
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+
+	// Montage Warping
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));	
+
 }
 
 // Called when the game starts or when spawned
@@ -101,6 +107,12 @@ void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
 		return;
 	}
 
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
+
 	const FRotator Rotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
@@ -113,6 +125,11 @@ void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
 
 void AEchoPlayerCharacter::Look(const struct FInputActionValue& Value)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	AddControllerYawInput(LookAxisVector.X);
@@ -121,17 +138,32 @@ void AEchoPlayerCharacter::Look(const struct FInputActionValue& Value)
 
 void AEchoPlayerCharacter::StartCrouch(const struct FInputActionValue& Value)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	bool bCrouch = Value.Get<bool>();
 	Crouch(bCrouch);
 }
 
 void AEchoPlayerCharacter::StopCrouch(const struct FInputActionValue& Value)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	UnCrouch();
 }
 
 void AEchoPlayerCharacter::Crouch(bool bClientSimulation)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	Super::Crouch(bClientSimulation);
 
 	//UE_LOG(LogTemp, Warning, TEXT("ClientSimulation : %s"), bClientSimulation ? TEXT("True") : TEXT("False"));
@@ -139,6 +171,11 @@ void AEchoPlayerCharacter::Crouch(bool bClientSimulation)
 
 void AEchoPlayerCharacter::UnCrouch(bool bClientSimulation)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	Super::UnCrouch(bClientSimulation);
 
 	//UE_LOG(LogTemp, Warning, TEXT("ClientSimulation : %s"), bClientSimulation ? TEXT("True") : TEXT("False"));
@@ -146,22 +183,39 @@ void AEchoPlayerCharacter::UnCrouch(bool bClientSimulation)
 
 void AEchoPlayerCharacter::StartSprint(const struct FInputActionValue& Value)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 }
 
 void AEchoPlayerCharacter::StopSprint(const struct FInputActionValue& Value)
 {
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
 void AEchoPlayerCharacter::Interact(const struct FInputActionValue& Value)
 {
-	TraceInteractable();
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
+	if (TraceInteractable())
+	{
+		TryTakeDown();
+	}
 }
 
-void AEchoPlayerCharacter::TraceInteractable() const
+bool AEchoPlayerCharacter::TraceInteractable()
 {
-	FHitResult HitResult;
 	FVector Location;
 	FRotator Rotation;
 
@@ -174,10 +228,16 @@ void AEchoPlayerCharacter::TraceInteractable() const
 	Params.AddIgnoredActor(this);
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
-	//DebugLineTrace(Start, End, bHit, HitResult);
+	DebugLineTrace(Start, End, bHit, HitResult);
 	if (bHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.GetActor()->GetActorNameOrLabel());
+		return bHit;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("감지실패"));
+		return false;
 	}
 }
 
@@ -189,4 +249,32 @@ void AEchoPlayerCharacter::DebugLineTrace(const FVector& OutStart, const FVector
 float AEchoPlayerCharacter::GetSpeed() const
 {
 	return Speed;
+}
+
+void AEchoPlayerCharacter::TryTakeDown()
+{
+	//TODO : 암살 구현하기
+
+	AGuardCharacter* Guard = Cast<AGuardCharacter>(HitResult.GetActor());
+	if (!Guard)
+	{
+		return;
+	}
+	FVector TakeDownVector = Guard->GetActorLocation() - GetActorLocation();
+	TakeDownVector.Normalize();
+
+	float Dot = FVector::DotProduct(Guard->GetActorForwardVector(), TakeDownVector);
+
+	if (Dot > 0.7f)
+	{
+		//암살 애니메이션 재생
+		bIsPerformingTakeDown = true;
+		PlayAnimMontage(TakeDownMontage);
+		Guard->TakeDown();
+	}
+}
+
+void AEchoPlayerCharacter::EndTakeDown()
+{
+	bIsPerformingTakeDown = false;
 }

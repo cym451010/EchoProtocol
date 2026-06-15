@@ -3,6 +3,9 @@
 
 #include "GuardCharacter.h"
 
+#include "AIController.h"
+#include "BrainComponent.h"
+
 // Sets default values
 AGuardCharacter::AGuardCharacter()
 {
@@ -16,7 +19,7 @@ AGuardCharacter::AGuardCharacter()
 void AGuardCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -25,6 +28,7 @@ void AGuardCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Speed = GetVelocity().Size2D();
+
 }
 
 // Called to bind functionality to input
@@ -47,4 +51,16 @@ AActor* AGuardCharacter::GetCurrentPatrol() const
 float AGuardCharacter::GetSpeed() const
 {
 	return Speed;
+}
+
+void AGuardCharacter::TakeDown()
+{
+	UE_LOG(LogTemp, Warning, TEXT("가드 애니메이션 실행"));
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+	AIController->StopMovement();
+	UBrainComponent* BrainComponent = AIController->GetBrainComponent();
+	BrainComponent->StopLogic(TEXT("TakeDown"));
+	SetActorEnableCollision(false);
+	PlayAnimMontage(DownMontage);
 }

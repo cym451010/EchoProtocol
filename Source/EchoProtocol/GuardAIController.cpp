@@ -3,6 +3,7 @@
 
 #include "GuardAIController.h"
 
+#include "Perception/AISense_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -17,13 +18,14 @@ AGuardAIController::AGuardAIController()
     
     SightConfig->SightRadius = 800.f;          // 이 거리 안에 들어오면 감지 시작
     SightConfig->LoseSightRadius = 1200.f;     // 감지한 대상이 이 거리 밖으로 나가면 감지를 잃음
+    SightConfig->PeripheralVisionAngleDegrees = 45.f;
 
     SightConfig->DetectionByAffiliation.bDetectEnemies = true;
     SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
     SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-    AIPerception->ConfigureSense(*SightConfig);                          // 시각 설정을 Perception 컴포넌트에 등록
-    AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());  // 여러 감각 중 주된 감각을 시각으로 지정
+    AIPerception->ConfigureSense(*SightConfig);
+    AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
 
     AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &AGuardAIController::OnTargetPerceptionUpdated);
 }
@@ -31,15 +33,15 @@ AGuardAIController::AGuardAIController()
 // Called when the game starts or when spawned
 void AGuardAIController::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	if (!BehaviorTree)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("BehaviorTree NullPtr"));
-		return;
-	}
-	RunBehaviorTree(BehaviorTree);
+    if (!BehaviorTree)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BehaviorTree NullPtr"));
+        return;
+    }
 
+    RunBehaviorTree(BehaviorTree);
     BlackboardComponent = GetBlackboardComponent();
 }
 
@@ -65,6 +67,4 @@ void AGuardAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
         UE_LOG(LogTemp, Warning, TEXT("bCanSeePlayer False"));
 
     }
-
-    //TODO : BT 구현하기
 }

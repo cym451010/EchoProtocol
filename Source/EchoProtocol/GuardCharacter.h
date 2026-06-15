@@ -26,6 +26,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void TakeDown();
+
 	AActor* GetCurrentPatrol() const;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
@@ -34,6 +36,13 @@ public:
 
 	UFUNCTION(BLUEPRINTPURE)
 	float GetSpeed() const;
+
+	UPROPERTY()
+	class AEchoPlayerCharacter* Player;
 private:
 	float Speed;
+	bool bIsPerformingTakeDown = false;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	class UAnimMontage* DownMontage;
 };

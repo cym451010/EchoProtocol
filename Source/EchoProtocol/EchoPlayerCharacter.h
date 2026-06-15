@@ -25,6 +25,8 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetSpeed() const;
+	UFUNCTION(BlueprintCallable)
+	void EndTakeDown();
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -39,8 +41,9 @@ protected:
 
 	void Crouch(bool bClientSimulation = false) override;
 	void UnCrouch(bool bClientSimulation = false) override;
-	void TraceInteractable() const;
+	bool TraceInteractable();
 	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
+	void TryTakeDown();
 
 	//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -66,11 +69,21 @@ protected:
 	float SprintSpeed = 900;
 
 private:
+	FHitResult HitResult;
+	UPROPERTY(EditAnywhere)
 	float MaxTraceRange;
 	float Speed;
+	bool bIsPerformingTakeDown = false;
 
+	// Weapon
 	UPROPERTY(EditAnywhere, Category = "Gun")
 	TSubclassOf<class AGun> WeaponClass;
 	UPROPERTY(EditAnywhere, Category = "Gun")
 	class AGun* Weapon;
+
+	//Animation
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	class UAnimMontage* TakeDownMontage;
+	UPROPERTY(VisibleAnywhere, Category = "Animation")
+	class UMotionWarpingComponent* MotionWarpingComponent;
 };
