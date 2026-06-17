@@ -35,11 +35,7 @@ EBTNodeResult::Type UBT_FindPatrolPoint::ExecuteTask(UBehaviorTreeComponent& Own
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPointsVector", PatrolPoint->GetActorLocation());
 
-	GuardCharacter->CurrentPatrolIndex++;
+	GuardCharacter->AdvancePatrolIndex();
 
-	if (GuardCharacter->CurrentPatrolIndex >= GuardCharacter->PatrolPoints.Num())
-	{
-		GuardCharacter->CurrentPatrolIndex = 0;
-	}
 	return EBTNodeResult::Succeeded;
 }

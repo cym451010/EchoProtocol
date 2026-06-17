@@ -32,8 +32,6 @@ public:
     UPROPERTY(EditAnywhere, Category = "AI")
     TArray<AActor*> PatrolPoints;
 
-    int32 CurrentPatrolIndex;
-
     UPROPERTY()
     class AEchoPlayerCharacter* Player;
 
@@ -46,7 +44,11 @@ private:
 public:
     UFUNCTION(BlueprintPure)
     float GetSpeed() const;
+    int32 GetCurrentPatrolIndex() const;
+
+    void AdvancePatrolIndex();
 
 private:
     float Speed;
+    int32 CurrentPatrolIndex;
 };

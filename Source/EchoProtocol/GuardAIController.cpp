@@ -43,30 +43,21 @@ void AGuardAIController::BeginPlay()
     }
 
     RunBehaviorTree(BehaviorTree);
-    BlackboardComponent = GetBlackboardComponent();
 }
 
 void AGuardAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
     if (!IsValid(Actor)) return;
 
-    if (!BlackboardComponent)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BlackboardComponent NullPtr"));
-
-        return;
-    }
-    
-
     if (Stimulus.WasSuccessfullySensed())
     {
         bCanSeePlayer = true;
-        BlackboardComponent->SetValueAsVector(TEXT("LastKnownLocation"), Actor->GetActorLocation());
+        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownLocation"), Actor->GetActorLocation());
     }
     else
     {
         bCanSeePlayer = false;
-        BlackboardComponent->SetValueAsVector(TEXT("LastKnownLocation"), Stimulus.StimulusLocation);
+        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownLocation"), Stimulus.StimulusLocation);
     }
 }
 

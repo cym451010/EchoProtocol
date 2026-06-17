@@ -55,8 +55,6 @@ float AGuardCharacter::GetSpeed() const
 
 void AGuardCharacter::TakeDown()
 {
-	UE_LOG(LogTemp, Warning, TEXT("가드 애니메이션 실행"));
-
 	AAIController* AIController = Cast<AAIController>(GetController());
 	AIController->StopMovement();
 	UBrainComponent* BrainComponent = AIController->GetBrainComponent();
@@ -68,4 +66,19 @@ void AGuardCharacter::TakeDown()
 void AGuardCharacter::Dead()
 {
 	Destroy();
+}
+
+int32 AGuardCharacter::GetCurrentPatrolIndex() const
+{
+	return CurrentPatrolIndex;
+}
+
+void AGuardCharacter::AdvancePatrolIndex()
+{
+	CurrentPatrolIndex++;
+
+	if (CurrentPatrolIndex >= PatrolPoints.Num())
+	{
+		CurrentPatrolIndex = 0;
+	}
 }

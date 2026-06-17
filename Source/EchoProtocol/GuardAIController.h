@@ -24,8 +24,6 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 	class UBehaviorTree* BehaviorTree;
-	UPROPERTY(EditAnywhere)
-	class UBlackboardComponent* BlackboardComponent;
 public:
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, struct FAIStimulus Stimulus);
@@ -36,8 +34,5 @@ public:
 
 	bool GetCanSeePlayer() const;
 private:
-	struct FTimerHandle LoseSightTimerHandle;
-
-
 	bool bCanSeePlayer = false;
 };

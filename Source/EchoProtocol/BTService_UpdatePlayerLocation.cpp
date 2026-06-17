@@ -17,5 +17,4 @@ void UBTService_UpdatePlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp
     if (!BlackboardComponent) return;
 
     BlackboardComponent->SetValueAsVector(TEXT("PlayerLocation"), Player->GetActorLocation());
-    BlackboardComponent->SetValueAsVector(TEXT("LastKnownLocation"), Player->GetActorLocation());
 }
