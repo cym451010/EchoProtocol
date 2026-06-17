@@ -33,4 +33,11 @@ public:
 	TObjectPtr<UAIPerceptionComponent> AIPerception;;
 	UPROPERTY()
 	class UAISenseConfig_Sight* SightConfig;
+
+	bool GetCanSeePlayer() const;
+private:
+	struct FTimerHandle LoseSightTimerHandle;
+
+
+	bool bCanSeePlayer = false;
 };

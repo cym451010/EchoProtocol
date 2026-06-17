@@ -8,6 +8,7 @@
 #include "Perception/AIPerceptionTypes.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "TimerManager.h"
 
 AGuardAIController::AGuardAIController()
 {
@@ -47,6 +48,8 @@ void AGuardAIController::BeginPlay()
 
 void AGuardAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
+    if (!IsValid(Actor)) return;
+
     if (!BlackboardComponent)
     {
         UE_LOG(LogTemp, Warning, TEXT("BlackboardComponent NullPtr"));
@@ -57,14 +60,17 @@ void AGuardAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 
     if (Stimulus.WasSuccessfullySensed())
     {
-        BlackboardComponent->SetValueAsBool(TEXT("bCanSeePlayer"), true);
-        UE_LOG(LogTemp, Warning, TEXT("bCanSeePlayer True"));
+        bCanSeePlayer = true;
+        BlackboardComponent->SetValueAsVector(TEXT("LastKnownLocation"), Actor->GetActorLocation());
     }
     else
     {
-        BlackboardComponent->SetValueAsBool(TEXT("bCanSeePlayer"), false);
-        BlackboardComponent->SetValueAsBool(TEXT("bCanChase"), false);
-        UE_LOG(LogTemp, Warning, TEXT("bCanSeePlayer False"));
-
+        bCanSeePlayer = false;
+        BlackboardComponent->SetValueAsVector(TEXT("LastKnownLocation"), Stimulus.StimulusLocation);
     }
+}
+
+bool AGuardAIController::GetCanSeePlayer() const
+{
+    return bCanSeePlayer;
 }
