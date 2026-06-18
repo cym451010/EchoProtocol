@@ -3,7 +3,6 @@
 
 #include "EchoPlayerCharacter.h"
 
-#include "CameraController.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "EnhancedInputSubsystems.h"
@@ -38,7 +37,7 @@ AEchoPlayerCharacter::AEchoPlayerCharacter()
 void AEchoPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	PlayerController = Cast<APlayerController>(GetController());
 	if (!PlayerController)
 	{
 		return;
@@ -264,14 +263,15 @@ void AEchoPlayerCharacter::TryTakeDown()
 
 	float Dot = FVector::DotProduct(Guard->GetActorForwardVector(), TakeDownVector);
 
-	if (Dot > 0.9f)
+	if (Dot > 0.75f)
 	{
-		//암살 애니메이션 재생
 		FVector BackOffset = -Guard->GetActorForwardVector() * TakeDownRange;
+		FVector RightOffset = Guard->GetActorRightVector() * TakeDownRightRange;
 
-		FVector TargetLocation = Guard->GetActorLocation() + BackOffset;
+		FVector TargetLocation = Guard->GetActorLocation() + BackOffset + RightOffset;
 		SetActorLocation(TargetLocation);
 		SetActorRotation(Guard->GetActorRotation());
+		PlayerController->SetControlRotation(Guard->GetActorRotation());
 
 		bIsPerformingTakeDown = true;
 		PlayAnimMontage(TakeDownMontage);

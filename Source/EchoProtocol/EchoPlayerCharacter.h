@@ -80,6 +80,8 @@ private:
 	float Speed;
 	UPROPERTY(EditAnywhere)
 	float TakeDownRange = 100.f;
+	UPROPERTY(EditAnywhere)
+	float TakeDownRightRange = 100.f;
 	bool bIsPerformingTakeDown = false;
 
 	// Weapon
@@ -91,4 +93,6 @@ private:
 	//Animation
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	class UAnimMontage* TakeDownMontage;
+
+	class APlayerController* PlayerController;
 };
