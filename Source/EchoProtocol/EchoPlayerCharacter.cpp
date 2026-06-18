@@ -62,6 +62,7 @@ void AEchoPlayerCharacter::BeginPlay()
 		return;
 	}
 	Weapon = GetWorld()->SpawnActor<AGun>(WeaponClass);
+	Weapon->SetOwner(this);
 	Weapon->AttachToComponent(Cast<USceneComponent>(GetMesh()), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 }
 
@@ -93,6 +94,7 @@ void AEchoPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInput->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::StartSprint);
 	EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AEchoPlayerCharacter::StopSprint);
 	EnhancedInput->BindAction(InteractAction, ETriggerEvent::Started, this, &AEchoPlayerCharacter::Interact);
+	EnhancedInput->BindAction(FireAction, ETriggerEvent::Started, this, &AEchoPlayerCharacter::Fire);
 }
 
 void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
@@ -225,7 +227,7 @@ bool AEchoPlayerCharacter::TraceInteractable()
 	Params.AddIgnoredActor(this);
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
-	DebugLineTrace(Start, End, bHit, HitResult);
+	//DebugLineTrace(Start, End, bHit, HitResult);
 	if (bHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.GetActor()->GetActorNameOrLabel());
@@ -262,7 +264,7 @@ void AEchoPlayerCharacter::TryTakeDown()
 
 	float Dot = FVector::DotProduct(Guard->GetActorForwardVector(), TakeDownVector);
 
-	if (Dot > 0.7f)
+	if (Dot > 0.9f)
 	{
 		//암살 애니메이션 재생
 		FVector BackOffset = -Guard->GetActorForwardVector() * TakeDownRange;
@@ -280,4 +282,20 @@ void AEchoPlayerCharacter::TryTakeDown()
 void AEchoPlayerCharacter::EndTakeDown()
 {
 	bIsPerformingTakeDown = false;
+}
+
+void AEchoPlayerCharacter::Fire(const struct FInputActionValue& Value)
+{
+	if (!Weapon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Weapon Null"));
+
+		return;
+	}
+	Weapon->Fire();
+}
+
+void AEchoPlayerCharacter::HandleDeath()
+{
+	UE_LOG(LogTemp, Error, TEXT("플레이어 사망"));
 }

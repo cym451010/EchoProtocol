@@ -23,7 +23,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Fire();
+	AController* GetOwnerController() const;
+
 private:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, Category = "Gun")
+	float MaxRange = 1000.f;
+
+	FHitResult HitResult;
+
+private:
+	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
 };

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "EchoPlayerCharacter.generated.h"
 
 UCLASS()
-class ECHOPROTOCOL_API AEchoPlayerCharacter : public ACharacter
+class ECHOPROTOCOL_API AEchoPlayerCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -38,12 +38,15 @@ protected:
 	void StartSprint(const struct FInputActionValue& Value);
 	void StopSprint(const struct FInputActionValue& Value);
 	void Interact(const struct FInputActionValue& Value);
+	void Fire(const struct FInputActionValue& Value);
 
 	void Crouch(bool bClientSimulation = false) override;
 	void UnCrouch(bool bClientSimulation = false) override;
 	bool TraceInteractable();
 	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
 	void TryTakeDown();
+	
+	virtual void HandleDeath() override;
 
 	//Input Mapping Context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -62,6 +65,8 @@ protected:
 	TObjectPtr<class UInputAction> SprintAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> InteractAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> FireAction;
 
 	UPROPERTY(Category = "Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
 	float WalkSpeed = 600;

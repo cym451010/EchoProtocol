@@ -63,8 +63,9 @@ void AGuardCharacter::TakeDown()
 	PlayAnimMontage(DownMontage);
 }
 
-void AGuardCharacter::Dead()
+void AGuardCharacter::HandleDeath()
 {
+	Super::HandleDeath();
 	Destroy();
 }
 

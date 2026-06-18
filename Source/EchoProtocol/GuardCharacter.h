@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "GuardCharacter.generated.h"
 
 UCLASS()
-class ECHOPROTOCOL_API AGuardCharacter : public ACharacter
+class ECHOPROTOCOL_API AGuardCharacter : public ABaseCharacter
 {
     GENERATED_BODY()
 
@@ -23,7 +23,7 @@ public:
     // Combat
     void TakeDown();
     UFUNCTION(BlueprintCallable)
-    void Dead();
+    virtual void HandleDeath() override;
 
 public:
     // AI / Patrol
