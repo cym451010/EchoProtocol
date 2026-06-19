@@ -25,6 +25,8 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetSpeed() const;
+	UFUNCTION(BlueprintPure)
+	bool GetbAim() const;
 	UFUNCTION(BlueprintCallable)
 	void EndTakeDown();
 protected:
@@ -33,16 +35,19 @@ protected:
 
 	void Move(const struct FInputActionValue& Value);
 	void Look(const struct FInputActionValue& Value);
+	void Jump() override;
 	void StartCrouch(const struct FInputActionValue& Value);
 	void StopCrouch(const struct FInputActionValue& Value);
 	void StartSprint(const struct FInputActionValue& Value);
 	void StopSprint(const struct FInputActionValue& Value);
 	void Interact(const struct FInputActionValue& Value);
 	void Fire(const struct FInputActionValue& Value);
+	void StartAim(const struct FInputActionValue& Value);
+	void StopAim(const struct FInputActionValue& Value);
 
 	void Crouch(bool bClientSimulation = false) override;
 	void UnCrouch(bool bClientSimulation = false) override;
-	bool TraceInteractable();
+	void TraceInteractable();
 	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
 	void TryTakeDown();
 	
@@ -67,6 +72,8 @@ protected:
 	TObjectPtr<class UInputAction> InteractAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> FireAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> AimAction;
 
 	UPROPERTY(Category = "Character Movement: Walking", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
 	float WalkSpeed = 600;
@@ -74,6 +81,7 @@ protected:
 	float SprintSpeed = 900;
 
 private:
+	FTimerHandle LineTraceTimerHandle;
 	FHitResult HitResult;
 	UPROPERTY(EditAnywhere)
 	float MaxTraceRange;
@@ -81,8 +89,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	float TakeDownRange = 100.f;
 	UPROPERTY(EditAnywhere)
-	float TakeDownRightRange = 100.f;
+	float TakeDownRightRange = 10.f;
 	bool bIsPerformingTakeDown = false;
+	bool bHasInteractable = false;
+	bool bIsAim = false;
 
 	// Weapon
 	UPROPERTY(EditAnywhere, Category = "Gun")
@@ -95,4 +105,5 @@ private:
 	class UAnimMontage* TakeDownMontage;
 
 	class APlayerController* PlayerController;
+	class AGuardCharacter* Guard;
 };

@@ -15,6 +15,7 @@
 #include "Engine/World.h"
 #include "GuardCharacter.h"
 
+//TODO :  플레이어 총 사격 애니메이션 및 줌 / 적 Ai 총 추가 및 사격 / E Key Ui 표시 구현 / 체력 바 / 총알, 총 이펙트, 사운드
 
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
@@ -63,6 +64,9 @@ void AEchoPlayerCharacter::BeginPlay()
 	Weapon = GetWorld()->SpawnActor<AGun>(WeaponClass);
 	Weapon->SetOwner(this);
 	Weapon->AttachToComponent(Cast<USceneComponent>(GetMesh()), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+
+	GetWorldTimerManager().SetTimer(LineTraceTimerHandle, this, &AEchoPlayerCharacter::TraceInteractable, 0.3f, true);
+
 }
 
 // Called every frame
@@ -71,6 +75,7 @@ void AEchoPlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Speed = GetVelocity().Size2D();
+
 }
 
 // Called to bind functionality to input
@@ -87,13 +92,16 @@ void AEchoPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::Move);
 	EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::Look);
-	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+	EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AEchoPlayerCharacter::Jump);
 	EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::StartCrouch);
 	EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AEchoPlayerCharacter::StopCrouch);
 	EnhancedInput->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::StartSprint);
 	EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AEchoPlayerCharacter::StopSprint);
 	EnhancedInput->BindAction(InteractAction, ETriggerEvent::Started, this, &AEchoPlayerCharacter::Interact);
 	EnhancedInput->BindAction(FireAction, ETriggerEvent::Started, this, &AEchoPlayerCharacter::Fire);
+	EnhancedInput->BindAction(AimAction, ETriggerEvent::Triggered, this, &AEchoPlayerCharacter::StartAim);
+	EnhancedInput->BindAction(AimAction, ETriggerEvent::Completed, this, &AEchoPlayerCharacter::StopAim);
+
 }
 
 void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
@@ -134,6 +142,16 @@ void AEchoPlayerCharacter::Look(const struct FInputActionValue& Value)
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 
+void AEchoPlayerCharacter::Jump()
+{
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
+	Super::Jump();
+}
+
 void AEchoPlayerCharacter::StartCrouch(const struct FInputActionValue& Value)
 {
 	if (bIsPerformingTakeDown)
@@ -163,8 +181,6 @@ void AEchoPlayerCharacter::Crouch(bool bClientSimulation)
 	}
 
 	Super::Crouch(bClientSimulation);
-
-	//UE_LOG(LogTemp, Warning, TEXT("ClientSimulation : %s"), bClientSimulation ? TEXT("True") : TEXT("False"));
 }
 
 void AEchoPlayerCharacter::UnCrouch(bool bClientSimulation)
@@ -175,8 +191,6 @@ void AEchoPlayerCharacter::UnCrouch(bool bClientSimulation)
 	}
 
 	Super::UnCrouch(bClientSimulation);
-
-	//UE_LOG(LogTemp, Warning, TEXT("ClientSimulation : %s"), bClientSimulation ? TEXT("True") : TEXT("False"));
 }
 
 void AEchoPlayerCharacter::StartSprint(const struct FInputActionValue& Value)
@@ -206,13 +220,13 @@ void AEchoPlayerCharacter::Interact(const struct FInputActionValue& Value)
 		return;
 	}
 
-	if (TraceInteractable())
+	if (bHasInteractable)
 	{
 		TryTakeDown();
 	}
 }
 
-bool AEchoPlayerCharacter::TraceInteractable()
+void AEchoPlayerCharacter::TraceInteractable()
 {
 	FVector Location;
 	FRotator Rotation;
@@ -227,15 +241,15 @@ bool AEchoPlayerCharacter::TraceInteractable()
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
 	//DebugLineTrace(Start, End, bHit, HitResult);
+
 	if (bHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.GetActor()->GetActorNameOrLabel());
-		return bHit;
+		bHasInteractable = true;
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("감지실패"));
-		return false;
+		bHasInteractable = false;
 	}
 }
 
@@ -253,7 +267,7 @@ void AEchoPlayerCharacter::TryTakeDown()
 {
 	//TODO : 암살 구현하기
 
-	AGuardCharacter* Guard = Cast<AGuardCharacter>(HitResult.GetActor());
+	Guard = Cast<AGuardCharacter>(HitResult.GetActor());
 	if (!Guard)
 	{
 		return;
@@ -275,6 +289,7 @@ void AEchoPlayerCharacter::TryTakeDown()
 
 		bIsPerformingTakeDown = true;
 		PlayAnimMontage(TakeDownMontage);
+
 		Guard->TakeDown();
 	}
 }
@@ -292,10 +307,40 @@ void AEchoPlayerCharacter::Fire(const struct FInputActionValue& Value)
 
 		return;
 	}
+
+	if (!bIsAim)
+	{
+		return;
+	}
 	Weapon->Fire();
 }
 
 void AEchoPlayerCharacter::HandleDeath()
 {
 	UE_LOG(LogTemp, Error, TEXT("플레이어 사망"));
+}
+
+void AEchoPlayerCharacter::StartAim(const struct FInputActionValue& Value)
+{
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
+	bIsAim = Value.Get<bool>();
+}
+
+void AEchoPlayerCharacter::StopAim(const struct FInputActionValue& Value)
+{
+	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+	
+	bIsAim = Value.Get<bool>();
+}
+
+bool AEchoPlayerCharacter::GetbAim() const
+{
+	return bIsAim;
 }

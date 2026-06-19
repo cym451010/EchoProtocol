@@ -25,7 +25,6 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void HandleDeath() override;
 
-public:
     // AI / Patrol
     AActor* GetCurrentPatrol() const;
 
@@ -40,11 +39,18 @@ private:
     UPROPERTY(EditAnywhere, Category = "Animation")
     class UAnimMontage* DownMontage;
 
+    //Widget
+    UPROPERTY(VisibleAnywhere, Category = "UI")
+    class UWidgetComponent* TakeDownWidgetComponent;
+
     bool bIsPerformingTakeDown = false;
+
 public:
     UFUNCTION(BlueprintPure)
     float GetSpeed() const;
     int32 GetCurrentPatrolIndex() const;
+
+    void SetTakeDownWidget(bool bIsVisible);
 
     void AdvancePatrolIndex();
 

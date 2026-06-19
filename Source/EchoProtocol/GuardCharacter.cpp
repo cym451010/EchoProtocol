@@ -3,6 +3,7 @@
 
 #include "GuardCharacter.h"
 
+#include "Components/WidgetComponent.h"
 #include "AIController.h"
 #include "BrainComponent.h"
 
@@ -13,6 +14,12 @@ AGuardCharacter::AGuardCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CurrentPatrolIndex = 0;
+
+	// 암살 위젯
+	TakeDownWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TakeDownWidgetComponent"));
+	TakeDownWidgetComponent->SetupAttachment(RootComponent);
+	TakeDownWidgetComponent->SetRelativeLocation(FVector(0, 0, 120.f));
+	TakeDownWidgetComponent->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +35,6 @@ void AGuardCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Speed = GetVelocity().Size2D();
-
 }
 
 // Called to bind functionality to input
@@ -82,4 +88,9 @@ void AGuardCharacter::AdvancePatrolIndex()
 	{
 		CurrentPatrolIndex = 0;
 	}
+}
+
+void AGuardCharacter::SetTakeDownWidget(bool bIsVisible)
+{
+	TakeDownWidgetComponent->SetVisibility(bIsVisible);
 }
