@@ -24,11 +24,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Fire();
+	void SpawnMuzzleFlash();
 	AController* GetOwnerController() const;
 
 private:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, Category = "Muzzle")
+	class UParticleSystem* MuzzleFlash;
 	UPROPERTY(EditAnywhere, Category = "Gun")
 	float MaxRange = 1000.f;
 

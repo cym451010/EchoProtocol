@@ -34,6 +34,8 @@ void AGun::Tick(float DeltaTime)
 
 void AGun::Fire()
 {
+	SpawnMuzzleFlash();
+
 	AController* OwnerController = GetOwnerController();
 	if (!OwnerController)
 	{
@@ -73,4 +75,14 @@ AController* AGun::GetOwnerController() const
 void AGun::DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const
 {
 	DrawDebugLineTraceSingle(GetWorld(), OutStart, OutEnd, EDrawDebugTrace::Persistent, OutHit, OutHitResult, FColor::Red, FColor::Green, 2.f);
+}
+
+void AGun::SpawnMuzzleFlash()
+{
+	if (!MuzzleFlash)
+	{
+		return;
+	}
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, FName("MuzzleSocket"));
+	UE_LOG(LogTemp, Warning, TEXT("머즐 생성"));
 }
