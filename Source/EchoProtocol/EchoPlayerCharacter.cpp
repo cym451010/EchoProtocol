@@ -245,6 +245,13 @@ void AEchoPlayerCharacter::TraceInteractable()
 	if (bHit)
 	{
 		bHasInteractable = true;
+
+		Guard = Cast<AGuardCharacter>(HitResult.GetActor());
+		if (!Guard)
+		{
+			return;
+		}
+		Guard->SetTakeDownWidget(bHit);
 	}
 	else
 	{
