@@ -32,6 +32,8 @@ private:
 	class UStaticMeshComponent* Mesh;
 	UPROPERTY(EditAnywhere, Category = "Muzzle")
 	class UParticleSystem* MuzzleFlash;
+	UPROPERTY(EditAnywhere, Category = "SFX")
+	class USoundBase* ShootSound;
 	UPROPERTY(EditAnywhere, Category = "Gun")
 	float MaxRange = 1000.f;
 

@@ -38,6 +38,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Gun")
 	class AGun* Weapon;
 
+	// SFX
+	UPROPERTY(EditAnywhere, Category = "SFX")
+	class USoundBase* BulletHitBodySound;
+
 	UPROPERTY(EditAnywhere, Category = "Health")
 	float MaxHealth = 100.f;
 	float CurrentHealth;

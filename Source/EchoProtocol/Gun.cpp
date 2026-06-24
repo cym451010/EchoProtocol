@@ -36,6 +36,12 @@ void AGun::Fire()
 {
 	SpawnMuzzleFlash();
 
+	if (!ShootSound)
+	{
+		return;
+	}
+	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, GetActorLocation());
+
 	AController* OwnerController = GetOwnerController();
 	if (!OwnerController)
 	{

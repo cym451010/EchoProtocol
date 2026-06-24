@@ -3,6 +3,7 @@
 
 #include "BaseCharacter.h"
 #include "Gun.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -49,7 +50,13 @@ void ABaseCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, con
 	{
 		return;
 	}
+	
+	if (!BulletHitBodySound)
+	{
+		return;
+	}
 
+	UGameplayStatics::PlaySoundAtLocation(this, BulletHitBodySound, GetActorLocation());
 	CurrentHealth -= Damage;
 	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
 

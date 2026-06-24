@@ -15,7 +15,7 @@
 #include "Engine/World.h"
 #include "GuardCharacter.h"
 
-//TODO :  체력 바 / 총알, 총 이펙트, 사운드 / 적 사망 시 총 오브젝트 삭제
+//TODO :  총알, 총 이펙트, 사운드
 
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
