@@ -2,6 +2,7 @@
 
 
 #include "BaseCharacter.h"
+#include "Gun.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -16,6 +17,14 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (!WeaponClass)
+	{
+		return;
+	}
+	Weapon = GetWorld()->SpawnActor<AGun>(WeaponClass);
+	Weapon->SetOwner(this);
+	Weapon->AttachToComponent(Cast<USceneComponent>(GetMesh()), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 	
 	OnTakeAnyDamage.AddDynamic(this, &ABaseCharacter::HandleTakeAnyDamage);
 }
@@ -47,6 +56,7 @@ void ABaseCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, con
 	if (CurrentHealth <= 0)
 	{
 		HandleDeath();
+		Weapon->Destroy();
 	}
 }
 

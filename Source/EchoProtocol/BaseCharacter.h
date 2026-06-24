@@ -31,7 +31,13 @@ public:
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
-private:
+protected:
+	// Weapon
+	UPROPERTY(EditAnywhere, Category = "Gun")
+	TSubclassOf<class AGun> WeaponClass;
+	UPROPERTY(EditAnywhere, Category = "Gun")
+	class AGun* Weapon;
+
 	UPROPERTY(EditAnywhere, Category = "Health")
 	float MaxHealth = 100.f;
 	float CurrentHealth;

@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "AIController.h"
 #include "BrainComponent.h"
+#include "Gun.h"
 
 // Sets default values
 AGuardCharacter::AGuardCharacter()
@@ -35,6 +36,7 @@ void AGuardCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Speed = GetVelocity().Size2D();
+
 }
 
 // Called to bind functionality to input
@@ -94,3 +96,14 @@ void AGuardCharacter::SetTakeDownWidget(bool bIsVisible)
 {
 	TakeDownWidgetComponent->SetVisibility(bIsVisible);
 }
+
+void AGuardCharacter::PullTrigger()
+{
+	if (!Weapon)
+	{
+		return;
+	}
+	PlayAnimMontage(ShootMontage);
+	Weapon->Fire();
+}
+

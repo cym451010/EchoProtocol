@@ -57,6 +57,7 @@ void AGun::Fire()
 
 	if (bHit)
 	{
+		UE_LOG(LogTemp, Display, TEXT("%s"), *HitResult.GetActor()->GetName());
 		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 10, OwnerController, this, UDamageType::StaticClass());
 	}
 }

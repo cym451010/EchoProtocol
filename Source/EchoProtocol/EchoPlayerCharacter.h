@@ -29,6 +29,8 @@ public:
 	bool GetbAim() const;
 	UFUNCTION(BlueprintCallable)
 	void EndTakeDown();
+	UFUNCTION(BlueprintPure)
+	float GetHp() const;
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -93,12 +95,7 @@ private:
 	bool bIsPerformingTakeDown = false;
 	bool bHasInteractable = false;
 	bool bIsAim = false;
-
-	// Weapon
-	UPROPERTY(EditAnywhere, Category = "Gun")
-	TSubclassOf<class AGun> WeaponClass;
-	UPROPERTY(EditAnywhere, Category = "Gun")
-	class AGun* Weapon;
+	bool bHit = false;
 
 	//Animation
 	UPROPERTY(EditAnywhere, Category = "Animation")

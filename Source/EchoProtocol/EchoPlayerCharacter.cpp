@@ -9,13 +9,13 @@
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "DrawDebugHelpers.h"
 #include "Gun.h"
+#include "DrawDebugHelpers.h"
 #include "KismetTraceUtils.h"
 #include "Engine/World.h"
 #include "GuardCharacter.h"
 
-//TODO :  플레이어 총 사격 애니메이션 및 줌 / 적 Ai 총 추가 및 사격 / E Key Ui 표시 구현 / 체력 바 / 총알, 총 이펙트, 사운드
+//TODO :  체력 바 / 총알, 총 이펙트, 사운드 / 적 사망 시 총 오브젝트 삭제
 
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
@@ -57,16 +57,7 @@ void AEchoPlayerCharacter::BeginPlay()
 	}
 	Subsystem->AddMappingContext(DefaultMappingContext, 0);
 
-	if (!WeaponClass)
-	{
-		return;
-	}
-	Weapon = GetWorld()->SpawnActor<AGun>(WeaponClass);
-	Weapon->SetOwner(this);
-	Weapon->AttachToComponent(Cast<USceneComponent>(GetMesh()), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-
 	GetWorldTimerManager().SetTimer(LineTraceTimerHandle, this, &AEchoPlayerCharacter::TraceInteractable, 0.3f, true);
-
 }
 
 // Called every frame
@@ -230,33 +221,29 @@ void AEchoPlayerCharacter::TraceInteractable()
 {
 	FVector Location;
 	FRotator Rotation;
-
 	Controller->GetPlayerViewPoint(Location, Rotation);
-
 	FVector Start = Location;
 	FVector End = Start + (Rotation.Vector() * MaxTraceRange);
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
+	bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
 	//DebugLineTrace(Start, End, bHit, HitResult);
 
-	if (bHit)
-	{
-		bHasInteractable = true;
+	AGuardCharacter* NewGuard = bHit ? Cast<AGuardCharacter>(HitResult.GetActor()) : nullptr;
 
-		Guard = Cast<AGuardCharacter>(HitResult.GetActor());
-		if (!Guard)
-		{
-			return;
-		}
-		Guard->SetTakeDownWidget(bHit);
-	}
-	else
+	if (Guard && Guard != NewGuard)
 	{
-		UE_LOG(LogTemp, Error, TEXT("감지실패"));
-		bHasInteractable = false;
+		Guard->SetTakeDownWidget(false);
+	}
+
+	Guard = NewGuard;
+	bHasInteractable = (Guard != nullptr);
+
+	if (Guard)
+	{
+		Guard->SetTakeDownWidget(true);
 	}
 }
 
@@ -284,7 +271,7 @@ void AEchoPlayerCharacter::TryTakeDown()
 
 	float Dot = FVector::DotProduct(Guard->GetActorForwardVector(), TakeDownVector);
 
-	if (Dot > 0.75f)
+	if (Dot > 0.75f && bHit)
 	{
 		FVector BackOffset = -Guard->GetActorForwardVector() * TakeDownRange;
 		FVector RightOffset = Guard->GetActorRightVector() * TakeDownRightRange;
@@ -350,4 +337,9 @@ void AEchoPlayerCharacter::StopAim(const struct FInputActionValue& Value)
 bool AEchoPlayerCharacter::GetbAim() const
 {
 	return bIsAim;
+}
+
+float AEchoPlayerCharacter::GetHp() const
+{
+	return CurrentHealth / MaxHealth;
 }
