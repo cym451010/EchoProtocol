@@ -40,7 +40,9 @@ protected:
 
 	// SFX
 	UPROPERTY(EditAnywhere, Category = "SFX")
-	class USoundBase* BulletHitBodySound;
+	class USoundBase* WalkSound;
+
+	void PlayWalkSound();
 
 	UPROPERTY(EditAnywhere, Category = "Health")
 	float MaxHealth = 100.f;

@@ -34,6 +34,10 @@ private:
 	class UParticleSystem* MuzzleFlash;
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	class USoundBase* ShootSound;
+	UPROPERTY(EditAnywhere, Category = "SFX")
+	class USoundBase* BulletHitBodySound;
+	UPROPERTY(EditAnywhere, Category = "SFX")
+	class USoundBase* ImpactSound;
 	UPROPERTY(EditAnywhere, Category = "Gun")
 	float MaxRange = 1000.f;
 

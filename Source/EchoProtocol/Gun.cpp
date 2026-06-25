@@ -36,7 +36,7 @@ void AGun::Fire()
 {
 	SpawnMuzzleFlash();
 
-	if (!ShootSound)
+	if (!ShootSound || !ImpactSound || !BulletHitBodySound)
 	{
 		return;
 	}
@@ -61,10 +61,20 @@ void AGun::Fire()
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
 	DebugLineTrace(Start, End, bHit, HitResult);
 
-	if (bHit)
+	if (!bHit || !HitResult.GetActor())
 	{
-		UE_LOG(LogTemp, Display, TEXT("%s"), *HitResult.GetActor()->GetName());
+		return;
+	}
+
+	if (ABaseCharacter* HitCharacter = Cast<ABaseCharacter>(HitResult.GetActor()))
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, BulletHitBodySound, HitResult.ImpactPoint);
 		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 10, OwnerController, this, UDamageType::StaticClass());
+
+	}
+	else
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, HitResult.ImpactPoint);
 	}
 }
 

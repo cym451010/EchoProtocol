@@ -50,13 +50,7 @@ void ABaseCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, con
 	{
 		return;
 	}
-	
-	if (!BulletHitBodySound)
-	{
-		return;
-	}
 
-	UGameplayStatics::PlaySoundAtLocation(this, BulletHitBodySound, GetActorLocation());
 	CurrentHealth -= Damage;
 	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
 
@@ -70,4 +64,9 @@ void ABaseCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, con
 void ABaseCharacter::HandleDeath()
 {
 	
+}
+
+void ABaseCharacter::PlayWalkSound()
+{
+	UGameplayStatics::PlaySoundAtLocation(this, WalkSound, GetActorLocation());
 }

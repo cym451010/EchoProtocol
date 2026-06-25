@@ -15,7 +15,7 @@
 #include "Engine/World.h"
 #include "GuardCharacter.h"
 
-//TODO :  총알, 총 이펙트, 사운드
+//TODO :  앉아쏘기 애니메이션 추가하기 (없음..)
 
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
@@ -150,7 +150,7 @@ void AEchoPlayerCharacter::StartCrouch(const struct FInputActionValue& Value)
 		return;
 	}
 
-	bool bCrouch = Value.Get<bool>();
+	bCrouch = Value.Get<bool>();
 	Crouch(bCrouch);
 }
 
@@ -321,12 +321,22 @@ void AEchoPlayerCharacter::StartAim(const struct FInputActionValue& Value)
 		return;
 	}
 
+	if (bCrouch)
+	{
+		return;
+	}
+
 	bIsAim = Value.Get<bool>();
 }
 
 void AEchoPlayerCharacter::StopAim(const struct FInputActionValue& Value)
 {
 	if (bIsPerformingTakeDown)
+	{
+		return;
+	}
+
+	if (bCrouch)
 	{
 		return;
 	}

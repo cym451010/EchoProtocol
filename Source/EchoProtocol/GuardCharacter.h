@@ -27,7 +27,7 @@ public:
 
     AActor* GetCurrentPatrol() const;
 
-    UPROPERTY(EditAnywhere, Category = "AI")
+    UPROPERTY(EditInstanceOnly, Category = "AI")
     TArray<AActor*> PatrolPoints;
 
     UPROPERTY()

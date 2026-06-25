@@ -96,6 +96,7 @@ private:
 	bool bHasInteractable = false;
 	bool bIsAim = false;
 	bool bHit = false;
+	bool bCrouch = false;
 
 	//Animation
 	UPROPERTY(EditAnywhere, Category = "Animation")
