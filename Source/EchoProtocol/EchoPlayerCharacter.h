@@ -52,6 +52,8 @@ protected:
 	void TraceInteractable();
 	void DebugLineTrace(const FVector& OutStart, const FVector& OutEnd, const bool& OutHit, const FHitResult& OutHitResult) const;
 	void TryTakeDown();
+
+	bool CheckBehindEnemy() const;
 	
 	virtual void HandleDeath() override;
 

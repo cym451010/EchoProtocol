@@ -16,7 +16,7 @@
 #include "GuardCharacter.h"
 
 //TODO :  앉아쏘기 애니메이션 추가하기 (없음..)
-
+// 정면에서 E키 누를 시 멈추는 버그 수정하기, 정면 일 때 E Key UI나오는거 수정하기
 // Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
 {
@@ -66,7 +66,6 @@ void AEchoPlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Speed = GetVelocity().Size2D();
-
 }
 
 // Called to bind functionality to input
@@ -166,10 +165,11 @@ void AEchoPlayerCharacter::StopSprint(const struct FInputActionValue& Value)
 
 void AEchoPlayerCharacter::Interact(const struct FInputActionValue& Value)
 {
-	if (bHasInteractable)
+	if (!bHasInteractable || !CheckBehindEnemy())
 	{
-		TryTakeDown();
+		return;
 	}
+	TryTakeDown();
 }
 
 void AEchoPlayerCharacter::TraceInteractable()
@@ -196,7 +196,7 @@ void AEchoPlayerCharacter::TraceInteractable()
 	Guard = NewGuard;
 	bHasInteractable = (Guard != nullptr);
 
-	if (Guard)
+	if (Guard && CheckBehindEnemy())
 	{
 		Guard->SetTakeDownWidget(true);
 	}
@@ -215,31 +215,24 @@ float AEchoPlayerCharacter::GetSpeed() const
 void AEchoPlayerCharacter::TryTakeDown()
 {
 	DisableInput(PlayerController);
-	//TODO : 암살 구현하기
-	if (!Guard)
+
+	if (!CheckBehindEnemy())
 	{
 		return;
 	}
-	FVector TakeDownVector = Guard->GetActorLocation() - GetActorLocation();
-	TakeDownVector.Normalize();
 
-	float Dot = FVector::DotProduct(Guard->GetActorForwardVector(), TakeDownVector);
+	FVector BackOffset = -Guard->GetActorForwardVector() * TakeDownRange;
+	FVector RightOffset = Guard->GetActorRightVector() * TakeDownRightRange;
 
-	if (Dot > 0.75f && bHit)
-	{
-		FVector BackOffset = -Guard->GetActorForwardVector() * TakeDownRange;
-		FVector RightOffset = Guard->GetActorRightVector() * TakeDownRightRange;
+	FVector TargetLocation = Guard->GetActorLocation() + BackOffset + RightOffset;
+	SetActorLocation(TargetLocation);
+	SetActorRotation(Guard->GetActorRotation());
+	PlayerController->SetControlRotation(Guard->GetActorRotation());
 
-		FVector TargetLocation = Guard->GetActorLocation() + BackOffset + RightOffset;
-		SetActorLocation(TargetLocation);
-		SetActorRotation(Guard->GetActorRotation());
-		PlayerController->SetControlRotation(Guard->GetActorRotation());
+	bIsPerformingTakeDown = true;
+	PlayAnimMontage(TakeDownMontage);
 
-		bIsPerformingTakeDown = true;
-		PlayAnimMontage(TakeDownMontage);
-
-		Guard->TakeDown();
-	}
+	Guard->TakeDown();
 }
 
 void AEchoPlayerCharacter::EndTakeDown()
@@ -302,4 +295,25 @@ bool AEchoPlayerCharacter::GetbAim() const
 float AEchoPlayerCharacter::GetHp() const
 {
 	return CurrentHealth / MaxHealth;
+}
+
+bool AEchoPlayerCharacter::CheckBehindEnemy() const
+{
+	if (!Guard)
+	{
+		return false;
+	}
+	FVector TakeDownVector = Guard->GetActorLocation() - GetActorLocation();
+	TakeDownVector.Normalize();
+
+	float Dot = FVector::DotProduct(Guard->GetActorForwardVector(), TakeDownVector);
+
+	if (Dot > 0.75f && bHit)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
