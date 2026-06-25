@@ -104,12 +104,6 @@ void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
 		return;
 	}
 
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
-
 	const FRotator Rotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
@@ -122,11 +116,6 @@ void AEchoPlayerCharacter::Move(const struct FInputActionValue& Value)
 
 void AEchoPlayerCharacter::Look(const struct FInputActionValue& Value)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	AddControllerYawInput(LookAxisVector.X);
@@ -135,38 +124,24 @@ void AEchoPlayerCharacter::Look(const struct FInputActionValue& Value)
 
 void AEchoPlayerCharacter::Jump()
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	Super::Jump();
 }
 
 void AEchoPlayerCharacter::StartCrouch(const struct FInputActionValue& Value)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	bCrouch = Value.Get<bool>();
 	Crouch(bCrouch);
 }
 
 void AEchoPlayerCharacter::StopCrouch(const struct FInputActionValue& Value)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
+	bCrouch = Value.Get<bool>();
 	UnCrouch();
 }
 
 void AEchoPlayerCharacter::Crouch(bool bClientSimulation)
 {
-	if (bIsPerformingTakeDown)
+	if (bIsAim)
 	{
 		return;
 	}
@@ -176,41 +151,21 @@ void AEchoPlayerCharacter::Crouch(bool bClientSimulation)
 
 void AEchoPlayerCharacter::UnCrouch(bool bClientSimulation)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	Super::UnCrouch(bClientSimulation);
 }
 
 void AEchoPlayerCharacter::StartSprint(const struct FInputActionValue& Value)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 }
 
 void AEchoPlayerCharacter::StopSprint(const struct FInputActionValue& Value)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
 void AEchoPlayerCharacter::Interact(const struct FInputActionValue& Value)
 {
-	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
 	if (bHasInteractable)
 	{
 		TryTakeDown();
@@ -259,9 +214,8 @@ float AEchoPlayerCharacter::GetSpeed() const
 
 void AEchoPlayerCharacter::TryTakeDown()
 {
+	DisableInput(PlayerController);
 	//TODO : 암살 구현하기
-
-	Guard = Cast<AGuardCharacter>(HitResult.GetActor());
 	if (!Guard)
 	{
 		return;
@@ -290,6 +244,7 @@ void AEchoPlayerCharacter::TryTakeDown()
 
 void AEchoPlayerCharacter::EndTakeDown()
 {
+	EnableInput(PlayerController);
 	bIsPerformingTakeDown = false;
 }
 
@@ -332,11 +287,6 @@ void AEchoPlayerCharacter::StartAim(const struct FInputActionValue& Value)
 void AEchoPlayerCharacter::StopAim(const struct FInputActionValue& Value)
 {
 	if (bIsPerformingTakeDown)
-	{
-		return;
-	}
-
-	if (bCrouch)
 	{
 		return;
 	}

@@ -102,6 +102,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	class UAnimMontage* TakeDownMontage;
 
+	UPROPERTY()
 	class APlayerController* PlayerController;
+	UPROPERTY()
 	class AGuardCharacter* Guard;
 };
