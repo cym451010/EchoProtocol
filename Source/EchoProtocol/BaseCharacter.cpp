@@ -57,13 +57,12 @@ void ABaseCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, con
 	if (CurrentHealth <= 0)
 	{
 		HandleDeath();
-		Weapon->Destroy();
 	}
 }
 
 void ABaseCharacter::HandleDeath()
 {
-	
+	Weapon->Destroy();
 }
 
 void ABaseCharacter::PlayWalkSound()
