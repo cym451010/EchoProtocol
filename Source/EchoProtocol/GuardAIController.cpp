@@ -10,6 +10,8 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "TimerManager.h"
 
+//TODO : WBT_Guard 위젯 인터페이스 만들기 및 퍼센트 바인딩
+
 AGuardAIController::AGuardAIController()
 {
     AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
@@ -43,6 +45,7 @@ void AGuardAIController::BeginPlay()
     }
 
     RunBehaviorTree(BehaviorTree);
+
 }
 
 void AGuardAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

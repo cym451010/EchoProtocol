@@ -32,7 +32,6 @@ public:
 
     UPROPERTY()
     class AEchoPlayerCharacter* Player;
-
 private:
     // Animation
     UPROPERTY(EditAnywhere, Category = "Animation")
@@ -44,18 +43,29 @@ private:
     //Widget
     UPROPERTY(VisibleAnywhere, Category = "UI")
     class UWidgetComponent* TakeDownWidgetComponent;
+    UPROPERTY(VisibleAnywhere, Category = "UI")
+    class UWidgetComponent* GaugeWidgetComponent;
+
+    UPROPERTY()
+    class UGuardGaugeWidget* GuardGaugeWidget;
 
     bool bIsPerformingTakeDown = false;
 public:
     UFUNCTION(BlueprintPure)
     float GetSpeed() const;
-    int32 GetCurrentPatrolIndex() const;
+    UFUNCTION(BlueprintPure)
+    float GetSightGauge() const;
 
+    int32 GetCurrentPatrolIndex() const;
     void SetTakeDownWidget(bool bIsVisible);
     void PullTrigger();
     void AdvancePatrolIndex();
+    void UpdateSightGauge(float DeltaTime);
 
 private:
     float Speed;
     int32 CurrentPatrolIndex;
+    float MaxSightGauge = 30.f;
+    float SightGauge = 0.f;
+
 };

@@ -15,9 +15,6 @@
 #include "Engine/World.h"
 #include "GuardCharacter.h"
 
-//TODO :  앉아쏘기 애니메이션 추가하기 (없음..)
-// 정면에서 E키 누를 시 멈추는 버그 수정하기, 정면 일 때 E Key UI나오는거 수정하기
-// Sets default values
 AEchoPlayerCharacter::AEchoPlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
