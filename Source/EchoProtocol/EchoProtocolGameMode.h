@@ -18,6 +18,12 @@ public:
 	
 	/** Constructor */
 	AEchoProtocolGameMode();
+
+public:
+	void GameOver();
+
+	UPROPERTY(EditAnywhere)
+	class UUserWidget* GameOverWidget;
 };
 
 

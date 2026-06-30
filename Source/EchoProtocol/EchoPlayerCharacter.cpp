@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Gun.h"
 #include "DrawDebugHelpers.h"
+#include "EchoProtocolGameMode.h"
 #include "KismetTraceUtils.h"
 #include "Engine/World.h"
 #include "GuardCharacter.h"
@@ -257,6 +258,14 @@ void AEchoPlayerCharacter::Fire(const struct FInputActionValue& Value)
 void AEchoPlayerCharacter::HandleDeath()
 {
 	UE_LOG(LogTemp, Error, TEXT("플레이어 사망"));
+
+	AEchoProtocolGameMode* GameMode = Cast<AEchoProtocolGameMode>(GetWorld()->GetAuthGameMode());
+	if (!GameMode)
+	{
+		return;
+	}
+
+	GameMode->GameOver();
 }
 
 void AEchoPlayerCharacter::StartAim(const struct FInputActionValue& Value)

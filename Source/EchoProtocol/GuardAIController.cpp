@@ -3,6 +3,7 @@
 
 #include "GuardAIController.h"
 
+#include "GuardCharacter.h"
 #include "Perception/AISense_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionTypes.h"
@@ -51,6 +52,7 @@ void AGuardAIController::BeginPlay()
 void AGuardAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
     if (!IsValid(Actor)) return;
+    if (Actor->IsA<AGuardCharacter>()) return;
 
     if (Stimulus.WasSuccessfullySensed())
     {

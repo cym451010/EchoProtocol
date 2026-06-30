@@ -151,7 +151,6 @@ void AGuardCharacter::UpdateSightGauge(float DeltaTime)
 
 	if (SightGauge >= MaxSightGauge)
 	{
-		UE_LOG(LogTemp, Error, TEXT("플레이어 감지!!!"));
 		return;
 	}
 
