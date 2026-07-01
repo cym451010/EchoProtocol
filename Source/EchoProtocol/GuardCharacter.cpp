@@ -9,6 +9,8 @@
 #include "GuardAIController.h"
 #include "GuardGaugeWidget.h"
 #include "Gun.h"
+#include "EchoProtocolGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGuardCharacter::AGuardCharacter()
@@ -86,6 +88,15 @@ void AGuardCharacter::HandleDeath()
 {
 	Super::HandleDeath();
 	Destroy();
+
+	AEchoProtocolGameMode* GameMode = Cast<AEchoProtocolGameMode>(UGameplayStatics::GetGameMode(this));
+
+	if (!GameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GameMode Null"));
+		return;
+	}
+	GameMode->MinusEnemyCnt();
 }
 
 int32 AGuardCharacter::GetCurrentPatrolIndex() const

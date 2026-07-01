@@ -19,11 +19,30 @@ public:
 	/** Constructor */
 	AEchoProtocolGameMode();
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	void WinGame();
 	void GameOver();
+	void SetUpScreen();
+	void MinusEnemyCnt();
 
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> GameOverWidgetClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> WinGameWidgetClass;
+	UPROPERTY()
 	class UUserWidget* GameOverWidget;
+	UPROPERTY()
+	class UUserWidget* WinGameWidget;
+
+private:
+	int32 EnemyCnt;
 };
 
 

@@ -101,5 +101,4 @@ void AGun::SpawnMuzzleFlash()
 		return;
 	}
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, FName("MuzzleSocket"));
-	UE_LOG(LogTemp, Warning, TEXT("머즐 생성"));
 }

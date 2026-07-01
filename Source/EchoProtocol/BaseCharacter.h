@@ -46,5 +46,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Health")
 	float MaxHealth = 100.f;
+	UPROPERTY(EditAnywhere)
 	float CurrentHealth;
 };
