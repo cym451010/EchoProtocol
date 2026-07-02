@@ -8,8 +8,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-//TODO : 적 인원 실시간 확인 코드 짜기
-
 AEchoProtocolGameMode::AEchoProtocolGameMode()
 {
     PrimaryActorTick.bCanEverTick = true;
